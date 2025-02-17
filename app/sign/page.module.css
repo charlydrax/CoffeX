@@ -1,0 +1,138 @@
+.container {
+    width: 100%;
+    height: 100vh;
+    display: grid;
+    grid-template-columns: 5fr 4fr;
+}
+
+.containerIcon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.containerForm {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: flex-start;
+}
+
+.titreForm {
+    font-size: 60px;
+    padding: 0;
+    margin: 0;
+    line-height: 60px;
+}
+
+.sousTitreForm {
+    font-size: 48px;
+    padding: 0;
+    margin: 0;
+    line-height: 48px;
+}
+
+/* style SignUp */
+.register-container {
+    width: 100%;
+}
+/* style SignUp */
+
+
+
+/* styles/signin.css */
+
+
+  .containerSignIn {
+    background-color: #2C1B18;
+    color: #F5E9DC;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    width: 40vw;
+    height: auto;
+    margin: 0;
+  }
+  
+  .loginBox {
+    background: #3E2723;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+    width: 300px;
+    text-align: center;
+  }
+  
+  .title {
+    margin-bottom: 20px;
+  }
+  
+  .inputBox {
+    margin-bottom: 15px;
+    text-align: left;
+  }
+  .inputBox label {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 5px;
+  }
+  
+  .registerInput {
+    width: 93%;
+    padding: 10px;
+    border: 1px solid #9C5A4E;
+    border-radius: 5px;
+    background-color: #2A2A2A;
+    color: white;
+    outline: none;
+    transition: border 0.3s ease;
+  }
+
+  .registerInput:focus {
+      border: 1px solid #C08768;
+  }
+  .btn {
+    background-color: #C08768;
+    color: #2C1B18;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 16px;
+    font-weight: bold;
+  }
+  
+  .btn:hover {
+    background-color: #A67C52;
+  }
+  .subtitle {
+    font-size: 14px;
+    color: #C08768;
+    margin-bottom: 20px;
+  }  
+  .registerLink {
+    margin-top: 15px;
+    font-size: 14px;
+  }
+  
+  .registerLink a {
+    color: #C08768;
+    text-decoration: none;
+    font-weight: bold;
+  }
+  
+  .registerLink a:hover {
+    text-decoration: underline;
+  }
+
+  .btnContainer {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+  }
+
+  .btnContainer button {
+    width: 60%;
+  }
