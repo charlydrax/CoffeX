@@ -15,8 +15,8 @@ import { redirect } from "next/navigation";
 const HomeComponent = () => {
   return (
     <>
-      <Coffs />
       <Coff />
+      <Coffs />
     </>
   );
 };

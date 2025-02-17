@@ -76,7 +76,7 @@
   animation-fill-mode: forwards;
 }
 
-.icon {
+.iconImg {
   color: #F5E9DC;
   font-size: 2rem;
   cursor: pointer;
@@ -126,6 +126,8 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    height: 94vh;
+    overflow-y: scroll;
 }
 .aside_right{
     /* background: rgb(223, 178, 41); */
@@ -172,3 +174,48 @@
 .profile:hover{
   background: #3E2723;
 }
+
+/* card coffs*/
+
+.cardCoffs{
+    display: grid;
+    grid-template-rows: 1fr auto;
+    background: #3E2723;
+    border-radius: 10px;
+    width: 500px;
+    margin-top: 20px;
+    padding: 20px;
+    gap: 10px;
+}
+.imgCardCoffs{
+    width: 100%;
+    margin-top: 20px;
+}
+.cardContent{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+.cardContent p{
+    font-size: 24px;
+    color: #F5E1A4;
+}
+.cardContent button{
+    font-size: 16px;
+    width: 100px;
+    height: 30px;
+    border-radius: 40px;
+    background: #F5E1A4;
+    color: #3E2723;
+    border: none;
+}
+.cardContent button:hover{
+    color: #F5E1A4;
+    background: #2D1B18;
+}
+.cardUser{
+  text-align: start;
+  font-size: 24px;
+  color: #F5E1A4;
+}
+
