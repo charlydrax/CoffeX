@@ -1,9 +1,15 @@
 import { NextResponse } from "next/server";
-import clientPromise from "@/libs/mongodb";
+import connect from "@/libs/mongodb";
+import { MongoClient } from "mongodb";
+const client = new MongoClient(process.env.MONGODB_LOCAL);
 
 export async function GET() {
-    const client = await clientPromise;
-    const db = client.db("CoffeeX");
-    const coffs = await db.collection("coffs").find().toArray();
-    return NextResponse.json(coffs);
+    try{
+        await connect();
+        const db = client.db("CoffeeX");
+        const coffs = await db.collection("coffs").find().toArray();
+        return NextResponse.json(coffs);
+    }catch(error){
+        return NextResponse.json({ error: error.message }, { status: 500 });
+    }
 }
