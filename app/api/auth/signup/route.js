@@ -2,46 +2,161 @@ import { NextResponse } from "next/server";
 import connect from "@/libs/mongodb";
 import User from "@/models/user.model";
 import bcrypt from "bcryptjs";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from 'url';
 
-export async function POST(req) {
-    try {
-        // On récupère les informations de l'utilisateur
-        const { nickname, email, password, avatar } = await req.json();
-        console.log("👤 Utilisateur :", nickname, email, password, avatar); // Test de récupération de l'utilisateur
+// Pour obtenir __dirname dans un module ES
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-        // On se connecte à la base de données
-        connect();
+// Définir le dossier d'upload
+const uploadFolder = path.join(process.cwd(), 'public', 'images');
 
-        // On vérifie si l'utilisateur existe déjà
-        const user = await User.findOne({ email });
-        console.log("🔍 Utilisateur trouvé :", user); // Test pour savoir si l'utilisateur existe ou non
-        // Si l'utilisateur existe déjà, on renvoie une erreur
-        if (user) {
-            console.error("❌ Cet utilisateur existe déjà.");
-            return NextResponse.error(new Error("❌ Cet utilisateur existe déjà."));
-        };
+// Créer le dossier si inexistant
+if (!fs.existsSync(uploadFolder)) {
+  fs.mkdirSync(uploadFolder, { recursive: true });
+  console.log('Dossier "images" créé');
+}
 
-        // On crypte le mot de passe
-        const hashedPwd = await bcrypt.hash(password, 10);
+// Configuration du storage de Multer
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+      cb(null, uploadFolder);
+    },
+    filename: (req, file, cb) => {
+      cb(null, req.user.nickname + '-' + Date.now() + path.extname(file.originalname));
+    },
+});
 
-        // On crée un nouvel utilisateur
-        const newUser = new User({
-            nickname,
-            email,
-            password: hashedPwd,
-            avatar,
-        });
-        console.log("🔧 Utilisateur : ", newUser) // On vérifie la création de notre user
-        // On sauvegarde l'utilisateur dans la base de données
-        try {
-            await newUser.save();
-            console.log("✅ Utilisateur enregistré :", newUser);
-            return Response.json({ user: newUser, status: 201 });
-        } catch(error) {
-            console.error("❌ Erreur lors de la sauvegarde de l'utilisateur :", error);
-        }
-    } catch (error) {
-        console.error("❌ Erreur serveur :", error);
-        return Response.error(new Error("❌ Erreur serveur"));
-    };
+// Initialiser Multer
+const upload = multer({ storage });
+
+apiRoute.use(upload.single('img'));
+
+apiRoute.post(async (req, res) => {
+  try {
+    // Récupération du fichier uploadé
+    const image = req.file;
+    
+    // Création de l'objet contenant les chemins d'images
+    const pathImgExtracted = file ? { img: `/uploads/${file.filename}` } : {};
+    
+    // Ici, vous pouvez par exemple enregistrer l'article dans votre BDD en combinant
+    // req.body (les autres champs du formulaire) et pathImgExtracted (les images)
+    // Pour l'exemple, on renvoie simplement ces données en réponse.
+    
+    res.status(201).json({ message: "L'article a été créé", picture: pathImgExtracted });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Désactiver le bodyParser
+export const config = {
+  api: {
+    bodyParser: false,
+  },
 };
+
+// Convertir la requête en stream avec headers assignés
+async function requestToStream(req) {
+  const arrayBuffer = await req.arrayBuffer();
+  const stream = Readable.from(Buffer.from(arrayBuffer));
+  stream.headers = Object.fromEntries(req.headers.entries());
+  return stream;
+}
+
+async function parseForm(req) {
+  return new Promise((resolve, reject) => {
+    const form = new IncomingForm({
+      uploadDir: "./public/images",
+      keepExtensions: true,
+      multiples: false,
+    });
+
+    form.parse(req, (err, fields, files) => {
+      if (err) reject(err);
+      else resolve({ fields, files });
+    });
+  });
+}
+  
+export async function POST(req) {
+  try {
+    const reqStream = await requestToStream(req);
+
+    // Vérifier si le dossier `public/images` existe, sinon le créer
+    const uploadDir = path.join(process.cwd(), "public", "images");
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+
+    // Parser le formulaire avec formidable
+    const { fields, files } = await parseForm(reqStream);
+
+    console.log("📂 Fichier reçu :", files);
+    console.log("📜 Champs reçus :", fields);
+
+    // Récupérer les champs du formulaire
+    const { nickname, email, password } = fields;
+    if (!nickname || !email || !password) {
+      return NextResponse.json(
+        { error: "Tous les champs sont requis." },
+        { status: 400 }
+      );
+    }
+
+    await connect();
+
+    // Vérifier si l'utilisateur existe déjà
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return NextResponse.json(
+        { error: "Cet email est déjà utilisé." },
+        { status: 409 }
+      );
+    }
+
+    const hashedPwd = await bcrypt.hash(password, 10);
+
+    // Créer l'utilisateur (avatar vide pour l'instant)
+    let newUser = new User({
+      nickname,
+      email,
+      password: hashedPwd,
+      avatar: "",
+    });
+    newUser = await newUser.save();
+
+    let avatarPath = "";
+    if (files.avatar) {
+      const file = files.avatar;
+      console.log("📌 Fichier temporaire :", file.filepath);
+      
+      // Vérifier si le fichier existe avant de le renommer
+      if (fs.existsSync(file.filepath)) {
+        const ext = path.extname(file.originalFilename || file.newFilename);
+        const newFileName = `${newUser._id}${ext}`;
+        const newFilePath = path.join(uploadDir, newFileName);
+
+        console.log("✍️ Renommage du fichier...");
+        fs.renameSync(file.filepath, newFilePath);
+        console.log("✅ Fichier renommé en :", newFilePath);
+
+        avatarPath = `/images/${newFileName}`;
+        newUser.avatar = avatarPath;
+        await newUser.save();
+      } else {
+        console.error("❌ Le fichier temporaire n'existe pas !");
+      }
+    } else {
+      console.warn("⚠️ Aucun fichier reçu pour l'avatar.");
+    }
+
+    return NextResponse.json({ user: newUser, status: 201 }, { status: 201 });
+  } catch (error) {
+    console.error("❌ Erreur serveur :", error);
+    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
+  }
+}

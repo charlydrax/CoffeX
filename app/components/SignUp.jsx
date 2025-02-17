@@ -9,6 +9,10 @@ export default function SignUp ({ setSigningUp, setSigningIn }) {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
+        if(name === 'avatar') {
+            const file = e.target.files[0];
+            console.log("📂 Fichier sélectionné :", file);
+        };
         setUser((PrevUser) =>({ ...PrevUser,[name]: value }));
     };
 
