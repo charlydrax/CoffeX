@@ -1,0 +1,164 @@
+/* styles/signin.css */
+
+body {
+    background-color: #2C1B18;
+    color: #F5E9DC;
+    font-family: Arial, sans-serif;
+    /* display: flex;
+    justify-content: center;
+    align-items: center; */
+    height: 100vh;
+    margin: 0;
+}
+
+.register-title {
+    text-align: center;
+    font-size: 2.2rem;
+    color: #F5E1A4;
+    font-family: 'Dancing Script', cursive;
+    margin-bottom: 20px;
+}
+
+/* .register-container {
+    background-color: #3E2A47;
+    padding: 2.5rem;
+    border-radius: 12px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.4);
+    width: 400px;
+    position: relative;
+} */
+
+.register-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.register-label {
+    font-size: 1rem;
+    color: #F5E1A4;
+}
+
+.register-input {
+    padding: 12px;
+    border: 1px solid #9C5A4E;
+    border-radius: 8px;
+  }
+  
+  .container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
+  
+  .login-box {
+    background: #3E2723;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+    width: 300px;
+    text-align: center;
+  }
+  
+  h2 {
+    margin-bottom: 20px;
+  }
+  
+  .input-box {
+    margin-bottom: 15px;
+    text-align: left;
+  }
+  .input-box label {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 5px;
+  }
+  
+  /* .register-input {
+    width: 93%;
+    padding: 10px;
+    border-radius: 5px;
+    background: #F5E9DC;
+    color: #2C1B18;
+  } */
+  .register-input {
+    width: 93%;
+    padding: 10px;
+    border: 1px solid #9C5A4E;
+    border-radius: 5px;
+    background-color: #2A2A2A;
+    color: white;
+    outline: none;
+    transition: border 0.3s ease;
+
+}
+
+.register-input:focus {
+    border: 1px solid #F2A900;
+}
+
+.register-button {
+    background-color: #F2A900;
+    color: #3E2A47;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.register-button:hover {
+    background-color: #B97A58;
+}
+
+
+  .register-input:focus {
+      border: 1px solid #C08768;
+  }
+  .btn {
+    background-color: #C08768;
+    color: #2C1B18;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 16px;
+    font-weight: bold;
+  }
+  
+  .btn:hover {
+    background-color: #A67C52;
+  }
+  .subtitle {
+    font-size: 14px;
+    color: #C08768;
+    margin-bottom: 20px;
+  }  
+  .register-link {
+    margin-top: 15px;
+    font-size: 14px;
+  }
+  
+  .register-link a {
+    color: #C08768;
+    text-decoration: none;
+    font-weight: bold;
+  }
+  
+  .register-link a:hover {
+    text-decoration: underline;
+  }
+
+  .btn-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+  }
+
+  .btn-container button {
+    width: 60%;
+  }
+
