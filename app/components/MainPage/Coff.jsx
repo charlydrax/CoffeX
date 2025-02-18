@@ -78,7 +78,7 @@ const Coff = () => {
         <div className={styles.containerCoffs}>
             <img src={auth.avatar} alt="" className={styles.imgCoffs} />
             <form onSubmit={handleSubmit} className={styles.formCoffs}>
-                <textarea name="coffs" id="textOfCoff" placeholder="Petite pause café ?!" width="400px" height="200px" onChange={handleChange}></textarea>
+                <textarea name="coffs" id="textOfCoff" placeholder="Petite pause café ?!" width="400px" height="200px" onChange={handleChange} value={coffs.coffs}></textarea>
                 <div className={styles.divButton}>
                     <div className={styles.fileDiv}>
                         <div className={styles.inputDiv}>
