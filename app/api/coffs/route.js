@@ -1,8 +1,6 @@
 import  connect  from "@/libs/mongodb";
 import Coffs from "@/models/coff.model";
 
-
-
 export async function GET() {
     try {
         await connect()

@@ -11,7 +11,7 @@ const connect = async () => {
 
   try {
     // Tentative de connexion avec les variables d'environnement
-    await mongoose.connect(process.env.MONGODB_LOCAL, {
+    await mongoose.connect(process.env.MONGODB_URI, {
       dbName: process.env.DB_NAME, 
       useNewUrlParser: true,  
       //  Cette option permet d'utiliser le nouveau système d'analyse 
