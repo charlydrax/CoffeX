@@ -1,14 +1,13 @@
-"use client"; // Indique que ce composant est côté client
+"use client";
 import { useEffect, useState } from "react";
 import io from "socket.io-client";
 
-const socket = io("http://localhost:3000"); // URL du serveur WebSocket
+const socket = io("http://localhost:3000");
 
 export default function Home() {
   const [publications, setPublications] = useState([]);
 
   useEffect(() => {
-    // Écoute les nouvelles publications du serveur
     socket.on("newPublication", (newPublication) => {
       setPublications((prev) => [...prev, newPublication]);
     });
@@ -21,10 +20,8 @@ export default function Home() {
   const handleNewPublication = async () => {
     const newPublication = { content: "Nouvelle publication" };
 
-    // Affiche la publication immédiatement (optimistic update)
     setPublications((prev) => [...prev, newPublication]);
 
-    // Envoie la publication au serveur via l'API
     try {
       const response = await fetch("/api/coffs", {
         method: "POST",
@@ -37,7 +34,7 @@ export default function Home() {
       }
     } catch (error) {
       console.error(error);
-      // Retire la publication en cas d'erreur
+      //Enleve le coff si y'a une erreur
       setPublications((prev) => prev.filter((pub) => pub !== newPublication));
     }
   };

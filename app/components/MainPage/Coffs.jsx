@@ -46,64 +46,13 @@ export default function Home() {
     };
   }, [socket]);
 
-  // const handleNewPublication = async () => {
-  //   const newPublication = { content: "Nouvelle publication" };
-
-  //   // Affiche la publication immédiatement (optimistic update)
-  //   setPublications((prev) => [...prev, newPublication]);
-
-  //   // Envoie la publication au serveur via l'API
-  //   try {
-  //     const response = await fetch("/api/coffs", {
-  //       method: "POST",
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify(newPublication),
-  //     });
-
-  //     if (!response.ok) {
-  //       throw new Error("Erreur lors de l'envoi de la publication");
-  //     }
-  //   } catch (error) {
-  //     console.error(error);
-  //     // Retire la publication en cas d'erreur
-  //     setPublications((prev) => prev.filter((pub) => pub !== newPublication));
-  //   }
-  // };
-  // -------------------------------handle---pour---les---comments-------------------------------------------------
-//   const handleAddComment = (coffId) => {
-//     const comment = {
-//       user: "User", // Remplacer par le nom de l'utilisateur connecté
-//       message: newComment,
-//     };
-
-//     socket.emit("newComment", { coffId, comment });
-//     setNewComment(""); // Reset le champ de texte après l'envoi
-//   };
-
-//   const handleSubmitComment = async (e) => {
-//     e.preventDefault();
-
-//     try {
-//         const response = await axios.post("http://localhost:3000/api/comment", coffs);
-
-//         if (response.status === 200) {
-//             console.log("Coff publié :", response.data);
-//             const socket = getSocket();
-//             socket.emit("newPublication", response.data);
-            
-//             setComment({ user: auth.nickname || "", img: "", message: "" });
-//         }
-//     } catch (error) {
-//         console.error("Erreur publication :", error.message);
-//     }
-// };
 
 const handleAddComment = async (postId) => {
-  // const comment = {
+
     const user = auth.nickname || ""
     const img = auth.avatar || ""
     const message = newComment
-  // };
+
   setPublications((prev) =>
     prev.map((pub) =>
       pub._id === postId

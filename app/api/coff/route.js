@@ -12,16 +12,13 @@ export async function GET(id) {
 
 const addCoff =async (coff) => {
     try{
-        // connexion à la base de données
         console.log("on est dans le addCoff");
         
         await connectDB();
         const reponse = await Coff.create(coff);
-        // retourne la réponse de la base de données (l'article créé)
         
         return reponse;
     } catch(e){
-        // en cas d'erreur, afficher le message dans la console
         throw new Error(e.message);
     }
 }
