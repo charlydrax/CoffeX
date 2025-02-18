@@ -1,5 +1,4 @@
-import mongoose from "mongoose";
-
+const mongoose = require("mongoose");
 // On importe un plugin qui va nous aider à gérer les valeurs unique dans notre BDD
 
 
@@ -28,4 +27,5 @@ const coffSchema = new mongoose.Schema({
 
 const Coffs = mongoose.models.Coffs || mongoose.model("Coffs", coffSchema);
 
-export default Coffs;
+// export default Coffs;
+module.exports = Coffs;
