@@ -24,18 +24,24 @@ app.prepare().then(() => {
   io.on("connection", (socket) => {
     console.log("✅ Un utilisateur s'est connecté :", socket.id);
 
-    // Envoyer les publications existantes à l'utilisateur qui se connecte
     socket.emit("initPublications", publications);
 
-    // Écouter un nouveau message de publication
+    //Partie sur les publications
     socket.on("newPublication", (newPublication) => {
-      console.log("📢 Nouvelle publication reçue :", newPublication);
+    console.log("📢 Nouvelle publication reçue :", newPublication);
 
-      // Ajouter la publication en mémoire (ou dans une DB)
       publications.push(newPublication);
 
-      // 🔥 Diffuser la publication à tous les clients
+
       io.emit("newPublication", newPublication);
+    });
+
+    //Partie sur les commentaires
+    socket.on("newComment", async ({ coffId, comment }) => {
+      console.log("📢 Nouveau commentaire reçu :", comment);
+      
+      io.emit("newComment", { coffId, comment });
+    
     });
 
     socket.on("disconnect", () => {

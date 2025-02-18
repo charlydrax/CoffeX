@@ -198,6 +198,8 @@
 }
 .cardContent p{
     font-size: 24px;
+    display: flex;
+    justify-content: start;
     color: #F5E1A4;
 }
 .cardContent button{
