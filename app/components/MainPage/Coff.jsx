@@ -62,12 +62,12 @@ const Coff = () => {
         try {
             const response = await axios.post("http://localhost:3000/api/coff", coffs);
 
-            if (response.status === 201) {
+            if (response.status === 200) {
                 console.log("Coff publié :", response.data);
                 const socket = getSocket();
-                socket.emit("newPublication", response.data); // 🔥 Notifier tous les clients en temps réel
+                socket.emit("newPublication", response.data);
                 
-                setCoffs({ user: auth.nickname || "", coffs: "", img: "" }); // Réinitialiser le formulaire
+                setCoffs({ user: auth.nickname || "", coffs: "", img: "" });
             }
         } catch (error) {
             console.error("Erreur publication :", error.message);
@@ -94,11 +94,6 @@ const Coff = () => {
                     <button id="sendCoff">Poster</button>
                 </div>
             </form>
-            <ul>
-                {publications.map((pub, index) => (
-                    <li key={index}>{pub.coffs}</li>
-                ))}
-            </ul>
         </div>
     );
 };
