@@ -1,9 +1,16 @@
-import { NextResponse } from "next/server";
-import clientPromise from "@/libs/mongodb";
+import  connect  from "@/libs/mongodb";
+import Coffs from "@/models/coff.model";
+
+
 
 export async function GET() {
-    const client = await clientPromise;
-    const db = client.db("CoffeeX");
-    const coffs = await db.collection("coffs").find().toArray();
-    return NextResponse.json(coffs);
+    try {
+        await connect()
+        
+        const coff = await Coffs.find({})
+
+        return Response.json({coffs: coff , status: 200}, {status:200})
+    } catch (error) {
+        return Response.json({message:"Impossible de recuperer les coffs !", error:error.message, status: 404 }, {status:404})
+    }
 }

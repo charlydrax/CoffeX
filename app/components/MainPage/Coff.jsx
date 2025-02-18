@@ -1,72 +1,100 @@
 'use client';
 import styles from "../../page.module.css";
 import axios from "axios";
-import React, {useState, useContext} from 'react'
+import React, { useState, useContext, useEffect } from "react";
 import { AuthContext } from "../../context/AuthContext";
+import { getSocket } from "../../socket";
+
 const Coff = () => {
-    const { auth } = useContext(AuthContext);    
+    const [publications, setPublications] = useState([]);
+    const { auth } = useContext(AuthContext);
     const [coffs, setCoffs] = useState({
-        user: auth.nickname || '',
-        coffs: '',
-        img: '',
+        user: auth.nickname || "",
+        coffs: "",
+        img: "",
     });
 
+    // 🔹 Charger les publications existantes AU MONTAGE
+    useEffect(() => {
+        axios.get("http://localhost:3000/api/coffs")
+            .then((response) => {
+                console.log("Publications chargées :", response.data.coffs);
+                setPublications(response.data.coffs);
+            })
+            .catch((error) => console.error("Erreur chargement publications :", error));
+    }, []);
+
+    // 🔹 Écouter les nouvelles publications en WebSocket
+    useEffect(() => {
+        const socket = getSocket();
+
+        socket.on("newPublication", (newPublication) => {
+            console.log("Nouvelle publication reçue :", newPublication);
+            setPublications((prev) => [...prev, newPublication]);
+        });
+
+        return () => {
+            socket.off("newPublication"); // Nettoyer l'écouteur
+        };
+    }, []);
+
     const handleChange = (e) => {
-        // Destructuration pour extraire name, value et files de l'événement
         const { name, value, files } = e.target;
 
         if (name === "img" && files.length > 0) {
             const file = files[0];
             const reader = new FileReader();
-            
+
             reader.onloadend = () => {
                 const base64String = reader.result.split(",")[1];
                 setCoffs((prev) => ({ ...prev, img: base64String }));
             };
-            
-            reader.readAsDataURL(file); // Convertit l’image en Base64
+
+            reader.readAsDataURL(file);
         } else {
             setCoffs((prev) => ({ ...prev, [name]: value }));
         }
-        
     };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        try{
+
+        try {
             const response = await axios.post("http://localhost:3000/api/coff", coffs);
 
-            if(response.status === 201){
-                console.log('Coffs publié');
-                console.log(response);
+            if (response.status === 201) {
+                console.log("Coff publié :", response.data);
+                const socket = getSocket();
+                socket.emit("newPublication", response.data); // 🔥 Notifier tous les clients en temps réel
                 
+                setCoffs({ user: auth.nickname || "", coffs: "", img: "" }); // Réinitialiser le formulaire
             }
-        }catch(e){
-            console.log(e.message);
+        } catch (error) {
+            console.error("Erreur publication :", error.message);
         }
     };
-    
-  return (
-    <div className={styles.containerCoffs}>
-        <img src="https://img-cdn.pixlr.com/image-generator/history/65bb506dcb310754719cf81f/ede935de-1138-4f66-8ed7-44bd16efc709/medium.webp" alt="" className={styles.imgCoffs} />
-        <form onSubmit={handleSubmit} className={styles.formCoffs}>
-            <textarea name="coffs" id="" placeholder='Petite pause café ?!' width="400px" height="200px"  onChange={handleChange}></textarea>
-            <div className={styles.divButton}>
-                <div className={styles.fileDiv}>
-                    <div className={styles.inputDiv}>
-                        <input className={styles.input} name="img" type="file"  onChange={handleChange} />
-                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" strokeLinejoin="round" strokeLinecap="round" viewBox="0 0 24 24" strokeWidth="2" fill="none" stroke="currentColor" className={styles.icon}>
-                            <polyline points="16 16 12 12 8 16"></polyline>
-                            <line y2="21" x2="12" y1="12" x1="12"></line>
-                            <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"></path>
-                            <polyline points="16 16 12 12 8 16"></polyline>
-                        </svg>
-                    </div>
-                </div>
-                <button >Poster</button>
-            </div>
-        </form>
-    </div>
-  )
-}
 
-export default Coff
+    return (
+        <div className={styles.containerCoffs}>
+            <img src="https://img-cdn.pixlr.com/image-generator/history/65bb506dcb310754719cf81f/ede935de-1138-4f66-8ed7-44bd16efc709/medium.webp" alt="" className={styles.imgCoffs} />
+            <form onSubmit={handleSubmit} className={styles.formCoffs}>
+                <textarea name="coffs" id="textOfCoff" placeholder="Petite pause café ?!" width="400px" height="200px" onChange={handleChange}></textarea>
+                <div className={styles.divButton}>
+                    <div className={styles.fileDiv}>
+                        <div className={styles.inputDiv}>
+                            <input className={styles.input} name="img" type="file" onChange={handleChange} />
+                        </div>
+                    </div>
+                    <button id="sendCoff">Poster</button>
+                </div>
+            </form>
+            <ul>
+                {publications.map((pub, index) => (
+                    <li key={index}>{pub.coffs}</li>
+                ))}
+            </ul>
+        </div>
+    );
+};
+
+export default Coff;

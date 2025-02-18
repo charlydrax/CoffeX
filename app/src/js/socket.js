@@ -5,22 +5,31 @@ function setupSocket() {
     
   const form = document.getElementsByClassName('page_formCoffs__vSVSN')[0];
   // const input = document.getElementById('input');
-  const input = document.getElementsByTagName('button');
+  const input = document.getElementById('sendCoff');
+  const textOfCoff = document.getElementById('textOfCoff');
   const messages = document.getElementById('messages');
-
+  console.log('toutoulouuuuu');
+  
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     if (input.value) {
+      console.log('input.value', input.value);
+      
         socket_js.emit('chat message', input.value);
       input.value = '';
     }
   });
-
+  console.log("entre 2");
+  
   socket_js.on('chat message', (msg) => {
     const item = document.createElement('li');
-    item.textContent = msg;
+    console.log(textOfCoff);
+    
+    item.textContent = textOfCoff.value;
     messages.appendChild(item);
     window.scrollTo(0, document.body.scrollHeight);
+    console.log('msg', msg);
+    
   });
 }
 

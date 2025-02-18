@@ -1,5 +1,9 @@
 import Coff from "@/models/coff.model";
 import connectDB from "@/libs/mongodb";
+import { io } from "socket.io-client";
+
+const socket = io("http://localhost:3000");
+
 
 export async function GET(id) {
     const coff = await db.collection("coffs").findOne({ _id: id });
@@ -9,6 +13,8 @@ export async function GET(id) {
 const addCoff =async (coff) => {
     try{
         // connexion à la base de données
+        console.log("on est dans le addCoff");
+        
         await connectDB();
         const reponse = await Coff.create(coff);
         // retourne la réponse de la base de données (l'article créé)
@@ -21,10 +27,10 @@ const addCoff =async (coff) => {
 }
 export async function POST(req) {
     try {
+        console.log('on est dans le post');
         await connectDB();
         const body =await req.json();
-        // console.log("body reçu :", body);
-
+        
 
         const coffCreated = await addCoff(body);
         console.log("Coff créé :", coffCreated);
@@ -36,9 +42,12 @@ export async function POST(req) {
                 {status: 400}
             );
         }
+
+        socket.emit("newPublication", coffCreated);
         
         return Response.json(
             {message: "Coffs publié", coff: coffCreated},
+            {coffCreated},
             {status: 201}
         );
         

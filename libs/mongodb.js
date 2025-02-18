@@ -28,7 +28,6 @@ const connect = async () => {
     throw new Error("Échec de connexion à la base de données");
   }
 };
-
 /**
  * Système de cache pour éviter les connexions multiples
  * Garde en mémoire l'état de la connexion globalement
@@ -43,7 +42,7 @@ if (!cached) {
  * Implémente le pooling de connexions et le cache
  * @returns {Promise} Connexion Mongoose
  */
-export default async function connectDB() {
+const connectDB = async () =>{
   // Retourne la connexion existante si disponible
   if (cached.conn) {
     return cached.conn;
@@ -64,3 +63,5 @@ export default async function connectDB() {
     throw e;
   }
 }
+
+export default connectDB;
